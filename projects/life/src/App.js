@@ -2,6 +2,11 @@ import React, { Component } from 'react';
 import Life from './life';
 import './App.css';
 
+
+const COLORS = [
+  [0, 0, 0],
+  [255, 255, 0x5f]
+]
 /**
  * Life canvas
  */
@@ -21,7 +26,7 @@ class LifeCanvas extends Component {
    * Component did mount
    */
   componentDidMount() {
-    requestAnimationFrame(() => {this.animFrame()});
+    requestAnimationFrame(() => this.animFrame());
   }
 
   /**
@@ -39,10 +44,9 @@ class LifeCanvas extends Component {
     // Put the new image data back on the canvas
     // Next generation of life
 
+    this.life.step();
     let width = this.props.width;
     let height = this.props.height;
-
-    this.life.getCells();
 
     let canvas = this.refs.canvas;
     let ctx = canvas.getContext('2d');
@@ -54,15 +58,18 @@ class LifeCanvas extends Component {
     let imageData = ctx.getImageData(0, 0, width, height);
 
     for (let row = 0; row < height; row++) {
-      for (let col = 0; col < height; col++) {
+      for (let col = 0; col < width; col++) {
         let lifeGrid = this.life.getCells();
         let index = (row * width + col) * 4;
         let color = lifeGrid[row][col];
-
-        imageData.data[index + 0] = color;
-        imageData.data[index + 1] = color;
-        imageData.data[index + 2] = color;
-        imageData.data[index + 3] = 0xff;
+        //change red value
+        imageData.data[index + 0] =  COLORS[color][0];
+        //change green value
+        imageData.data[index + 1] =  COLORS[color][1];
+        //change blue value
+        imageData.data[index + 2] =  COLORS[color][2];
+        
+        imageData.data[index + 3] =  0xff; //alpha channel solid//alpha channel solid
 
       }
     }
